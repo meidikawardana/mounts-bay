@@ -2,11 +2,11 @@
 
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { LogOut, Package } from "lucide-react"
+import { LogOut, Package, Users } from "lucide-react"
 import Link from "next/link"
-import { handleLogout } from "../lib/actions/logout"
+import { handleLogout } from "../../lib/actions/logout"
 
-export default function DashboardPage() {
+export default function AdminDashboardPage() {
   return (
     <div className="min-h-screen p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
       <div className="max-w-6xl mx-auto">
@@ -22,14 +22,20 @@ export default function DashboardPage() {
         </div>
         <Card>
           <CardHeader className="space-y-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
-            <h2 className="text-2xl font-bold">Customer Dashboard</h2>
-            <p className="text-gray-200">Welcome to your dashboard</p>
+            <h2 className="text-2xl font-bold">Admin Dashboard</h2>
+            <p className="text-gray-200">Welcome to the admin dashboard</p>
           </CardHeader>
-          <CardContent className="p-6">
-            <Link href="/dashboard/orders">
-              <Button className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 p-2">
+          <CardContent className="p-6 space-y-4">
+            <Link href="/admin/orders">
+              <Button className="w-full flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 p-2">
                 <Package className="h-4 w-4" />
-                View Orders
+                Manage Orders
+              </Button>
+            </Link>
+            <Link href="/admin/users">
+              <Button className="w-full flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 p-2">
+                <Users className="h-4 w-4" />
+                Manage Users
               </Button>
             </Link>
           </CardContent>

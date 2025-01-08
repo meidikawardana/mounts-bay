@@ -4,13 +4,36 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { compare } from "bcrypt"
 import { db } from "./db"
 
+declare module "next-auth" {
+    interface User {
+        role?: string
+        id: string
+    }
+    interface Session {
+        user: User & {
+            role?: string
+            id: string
+        }
+    }
+}
+
+declare module "next-auth/jwt" {
+    interface JWT {
+        role?: string
+        id: string
+    }
+}
+
 export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(db),
+    secret: process.env.NEXTAUTH_SECRET,
     session: {
-        strategy: "jwt"
+        strategy: "jwt",
+        maxAge: 30 * 24 * 60 * 60, // 30 days
     },
     pages: {
         signIn: "/login",
+        error: "/login",
     },
     providers: [
         CredentialsProvider({
@@ -25,9 +48,7 @@ export const authOptions: NextAuthOptions = {
                 }
 
                 const user = await db.user.findUnique({
-                    where: {
-                        email: credentials.email
-                    }
+                    where: { email: credentials.email }
                 })
 
                 if (!user) {
@@ -50,25 +71,19 @@ export const authOptions: NextAuthOptions = {
         })
     ],
     callbacks: {
-        session: ({ session, token }) => {
-            return {
-                ...session,
-                user: {
-                    ...session.user,
-                    id: token.id,
-                    role: token.role,
-                }
-            }
-        },
-        jwt: ({ token, user }) => {
+        async jwt({ token, user }) {
             if (user) {
-                return {
-                    ...token,
-                    id: user.id,
-                    role: user.role,
-                }
+                token.role = user.role
+                token.id = user.id
             }
             return token
+        },
+        async session({ session, token }) {
+            if (session.user) {
+                session.user.role = token.role
+                session.user.id = token.id
+            }
+            return session
         }
     }
 } 

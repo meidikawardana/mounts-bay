@@ -37,18 +37,28 @@ model Product {
   updatedAt   DateTime  @updatedAt
 }
 
+enum OrderStatus {
+  PENDING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
 model Order {
-  id          String    @id @default(cuid())
-  user        User      @relation(fields: [userId], references: [id])
-  userId      String
-  product     Product   @relation(fields: [productId], references: [id])
-  productId   String
-  quantity    Int
-  status      Status    @default(PENDING)
+  id           String      @id @default(cuid())
+  user         User        @relation(fields: [userId], references: [id])
+  userId       String
+  product      Product     @relation(fields: [productId], references: [id])
+  productId    String
+  quantity     Int
+  status       OrderStatus @default(PENDING)
   deliveryDate DateTime
-  address     String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  address      String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([productId])
 }
 
 enum Status {

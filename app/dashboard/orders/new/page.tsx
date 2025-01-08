@@ -1,0 +1,213 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { Card, CardHeader, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Package } from "lucide-react"
+import { useNotifications } from "../../../contexts/notifications-context"
+import { format } from "date-fns"
+import { Calendar as CalendarIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
+interface Product {
+  id: string
+  name: string
+  price: number
+  stock: number
+}
+
+export default function NewOrderPage() {
+  const router = useRouter()
+  const { showNotification } = useNotifications()
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+  const [selectedProduct, setSelectedProduct] = useState("")
+  const [quantity, setQuantity] = useState("1")
+  const [deliveryDate, setDeliveryDate] = useState<Date>()
+  const [address, setAddress] = useState("")
+  const [submitting, setSubmitting] = useState(false)
+
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('/api/products')
+      if (!response.ok) throw new Error('Failed to fetch products')
+      const data = await response.json()
+      setProducts(data.products)
+    } catch (error) {
+      console.error("Error fetching products:", error)
+      showNotification("Failed to load products", "error")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const selectedProductDetails = products.find(p => p.id === selectedProduct)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!selectedProduct || !deliveryDate || !address) {
+      showNotification("Please fill in all fields", "error")
+      return
+    }
+
+    if (selectedProductDetails && parseInt(quantity) > selectedProductDetails.stock) {
+      showNotification(`Only ${selectedProductDetails.stock} items available`, "error")
+      return
+    }
+
+    setSubmitting(true)
+    try {
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId: selectedProduct,
+          quantity: parseInt(quantity),
+          deliveryDate,
+          address,
+        }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        console.error("Error creating order:", error)
+        throw new Error(error.error || 'Failed to create order')
+      }
+      
+      showNotification("Order placed successfully", "success")
+      router.push('/dashboard/orders')
+    } catch (error) {
+      if (error instanceof Error) {
+        showNotification(error.message, "error")
+      } else {
+        showNotification("Failed to place order", "error")
+      }
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
+      <div className="max-w-2xl mx-auto">
+        <Card>
+          <CardHeader className="space-y-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
+            <div className="flex items-center gap-2">
+              <Package className="h-5 w-5" />
+              <h2 className="text-2xl font-bold">Place New Order</h2>
+            </div>
+            <p className="text-gray-200">Fill in the details for your order</p>
+          </CardHeader>
+          <CardContent className="p-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Select Product</label>
+                <Select
+                  value={selectedProduct}
+                  onValueChange={setSelectedProduct}
+                  disabled={loading}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Choose a product" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {products.map((product) => (
+                      <SelectItem 
+                        key={product.id} 
+                        value={product.id}
+                        className="flex justify-between items-center"
+                      >
+                        <div className="flex justify-between w-full">
+                          <span>{product.name}</span>
+                          <span className="text-gray-500">
+                            ${product.price.toFixed(2)} ({product.stock} available)
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Quantity</label>
+                <Input
+                  type="number"
+                  min="1"
+                  max={selectedProductDetails?.stock}
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Delivery Date</label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !deliveryDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {deliveryDate ? format(deliveryDate, "PPP") : "Pick a date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={deliveryDate}
+                      onSelect={setDeliveryDate}
+                      disabled={(date) => date < new Date()}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Delivery Address</label>
+                <Input
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Enter delivery address"
+                  className="w-full"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={submitting || loading}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              >
+                {submitting ? "Placing Order..." : "Place Order"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
+} 
