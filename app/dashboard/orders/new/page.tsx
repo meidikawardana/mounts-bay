@@ -127,20 +127,33 @@ export default function NewOrderPage() {
                   disabled={loading}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Choose a product" />
+                    <SelectValue placeholder="Choose a product">
+                      {selectedProductDetails ? (
+                        <div className="flex items-center justify-between w-full gap-8">
+                          <span className="flex-shrink-0">{selectedProductDetails.name}</span>
+                          <div className="flex items-center gap-4 text-gray-500 flex-shrink-0">
+                            <span className="text-right">${selectedProductDetails.price.toFixed(2)}</span>
+                            <span className="text-left">({selectedProductDetails.stock} available)</span>
+                          </div>
+                        </div>
+                      ) : (
+                        "Choose a product"
+                      )}
+                    </SelectValue>
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="w-[--radix-select-trigger-width] bg-white">
                     {products.map((product) => (
                       <SelectItem 
                         key={product.id} 
                         value={product.id}
-                        className="flex justify-between items-center"
+                        className="w-full"
                       >
-                        <div className="flex justify-between w-full">
-                          <span>{product.name}</span>
-                          <span className="text-gray-500">
-                            ${product.price.toFixed(2)} ({product.stock} available)
-                          </span>
+                        <div className="flex items-center justify-between w-full gap-8">
+                          <span className="flex-shrink-0 pl-6">{product.name}</span>
+                          <div className="flex items-center gap-4 text-gray-500 flex-shrink-0">
+                            <span className="text-right">${product.price.toFixed(2)}</span>
+                            <span className="text-left">({product.stock} available)</span>
+                          </div>
                         </div>
                       </SelectItem>
                     ))}
