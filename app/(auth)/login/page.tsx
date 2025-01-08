@@ -12,6 +12,7 @@ import { Mail, Lock, LogIn } from "lucide-react"
 export default function LoginPage() {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -20,6 +21,7 @@ export default function LoginPage() {
     const response = await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
+      isAdmin: isAdmin,
       redirect: false,
     })
 
@@ -28,7 +30,7 @@ export default function LoginPage() {
       return
     }
 
-    router.push("/dashboard")
+    router.push(isAdmin ? "/admin/dashboard" : "/dashboard")
     router.refresh()
   }
 
@@ -36,10 +38,21 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-purple-100">
       <Card className="w-[400px] shadow-xl border-0">
         <CardHeader className="space-y-1 text-center bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-lg">
-          <h2 className="text-2xl font-bold tracking-tight text-white">Welcome back</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-white">
+            {isAdmin ? "Admin Login" : "Customer Login"}
+          </h2>
           <p className="text-gray-200">Enter your credentials to access your account</p>
         </CardHeader>
         <CardContent className="p-6">
+          <div className="mb-4">
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => setIsAdmin(!isAdmin)}
+            >
+              Switch to {isAdmin ? "Customer" : "Admin"} Login
+            </Button>
+          </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <div className="relative flex items-center">
