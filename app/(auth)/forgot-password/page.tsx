@@ -59,7 +59,7 @@ export default function ForgotPasswordPage() {
               </div>
               <Button 
                 type="submit" 
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 flex items-center justify-center gap-2 py-6"
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 flex items-center justify-center gap-2 p-2"
                 disabled={status === "loading"}
               >
                 {status === "loading" ? (

@@ -47,7 +47,7 @@ export default function LoginPage() {
           <div className="mb-4">
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full p-2"
               onClick={() => setIsAdmin(!isAdmin)}
             >
               Switch to {isAdmin ? "Customer" : "Admin"} Login
@@ -85,7 +85,7 @@ export default function LoginPage() {
             )}
             <Button 
               type="submit" 
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 flex items-center justify-center gap-2 py-6"
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 flex items-center justify-center gap-2 p-2"
             >
               <LogIn className="h-4 w-4" /> 
               Sign In
