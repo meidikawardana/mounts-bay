@@ -188,13 +188,30 @@ export default function NewOrderPage() {
                       {deliveryDate ? format(deliveryDate, "PPP") : "Pick a date"}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
+                  <PopoverContent className="w-auto p-4 bg-white rounded-lg shadow-lg" align="start">
                     <Calendar
                       mode="single"
                       selected={deliveryDate}
-                      onSelect={setDeliveryDate}
+                      onSelect={(date) => {
+                        setDeliveryDate(date);
+                        const popoverElement = document.querySelector('[role="dialog"]');
+                        if (popoverElement) {
+                          const closeEvent = new KeyboardEvent('keydown', { key: 'Escape' });
+                          popoverElement.dispatchEvent(closeEvent);
+                        }
+                      }}
                       disabled={(date) => date < new Date()}
                       initialFocus
+                      className="rounded-md border-0"
+                      classNames={{
+                        nav: "flex items-center justify-between space-x-1 mb-4",
+                        nav_button_previous: "!static -mt-4",
+                        nav_button_next: "!static -mt-4",
+                        head_cell: "w-9 font-normal text-gray-500",
+                        cell: "w-9 h-9 text-center p-0 relative [&:has([aria-selected])]:bg-black first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                        day: "h-9 w-9 p-0 font-normal aria-selected:text-white",
+                        caption: "text-sm text-center"
+                      }}
                     />
                   </PopoverContent>
                 </Popover>
