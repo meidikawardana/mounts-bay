@@ -1,61 +1,86 @@
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Package, Users, LayoutDashboard, LogOut } from "lucide-react"
-import { handleLogout } from "../../lib/actions/logout"
+import {
+  Package,
+  LayoutDashboard,
+  ShoppingCart,
+  Users,
+  LogOut,
+} from "lucide-react"
+
+const routes = [
+  {
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    href: "/admin",
+    color: "text-sky-500",
+  },
+  {
+    label: "Products",
+    icon: Package,
+    href: "/admin/products",
+    color: "text-violet-500",
+  },
+  {
+    label: "Orders",
+    icon: ShoppingCart,
+    href: "/admin/orders",
+    color: "text-pink-500",
+  },
+  {
+    label: "Users",
+    icon: Users,
+    href: "/admin/users",
+    color: "text-orange-500",
+  },
+]
 
 export function AdminNav() {
   const pathname = usePathname()
+  const router = useRouter()
 
-  const navItems = [
-    {
-      title: "Dashboard",
-      href: "/admin/dashboard",
-      icon: LayoutDashboard
-    },
-    {
-      title: "Orders",
-      href: "/admin/orders",
-      icon: Package
-    },
-    {
-      title: "Users",
-      href: "/admin/users",
-      icon: Users
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+      })
+      if (response.ok) {
+        router.push('/login')
+      }
+    } catch (error) {
+      console.error('Logout failed:', error)
     }
-  ]
+  }
 
   return (
-    <div className="w-64 min-h-screen bg-white border-r border-gray-200 p-4">
-      <div className="space-y-4">
-        <div className="py-2">
-          <h2 className="mb-2 px-4 text-lg font-semibold">Admin Panel</h2>
-          <nav className="space-y-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900",
-                  pathname === item.href ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white" : "hover:bg-gray-100"
-                )}
-              >
-                <item.icon className="h-4 w-4" />
-                {item.title}
-              </Link>
-            ))}
-          </nav>
-        </div>
-        <div className="pt-4 border-t">
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 hover:bg-gray-100 w-full"
+    <nav className="flex flex-col w-64 h-screen bg-gray-50 border-r">
+      <div className="flex-1 px-3 py-4 overflow-y-auto">
+        {routes.map((route) => (
+          <Link
+            key={route.href}
+            href={route.href}
+            className={cn(
+              "flex items-center gap-x-2 text-sm font-[500] pl-3 py-4 rounded-lg transition-all hover:text-gray-900 hover:bg-gray-100",
+              pathname === route.href
+                ? "text-gray-900 bg-gray-200"
+                : "text-gray-500"
+            )}
           >
-            <LogOut className="h-4 w-4" />
-            Logout
-          </button>
-        </div>
+            <route.icon className={cn("w-5 h-5", route.color)} />
+            {route.label}
+          </Link>
+        ))}
       </div>
-    </div>
+      <div className="border-t px-3 py-4">
+        <button
+          onClick={handleLogout}
+          className="flex w-full items-center gap-x-2 text-sm font-[500] pl-3 py-4 rounded-lg transition-all hover:text-gray-900 hover:bg-gray-100 text-gray-500"
+        >
+          <LogOut className="w-5 h-5 text-red-500" />
+          Logout
+        </button>
+      </div>
+    </nav>
   )
 } 
