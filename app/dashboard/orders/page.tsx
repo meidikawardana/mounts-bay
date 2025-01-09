@@ -20,6 +20,7 @@ import { OrderSearch } from "./components/order-search"
 import { SortableHeader } from "./components/sortable-header"
 import { Pagination } from "./components/pagination"
 import { ExportButton } from "./components/export-button"
+import { UserNav } from "../components/user-nav"
 
 interface Order {
   id: string
@@ -148,9 +149,12 @@ export default function OrdersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
-        <div className="max-w-6xl mx-auto text-center">
-          Loading orders...
+      <div className="flex min-h-screen">
+        <UserNav />
+        <div className="flex-1 p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
+          <div className="max-w-6xl mx-auto text-center">
+            Loading orders...
+          </div>
         </div>
       </div>
     )
@@ -158,146 +162,152 @@ export default function OrdersPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
-        <div className="max-w-6xl mx-auto text-center text-red-500">
-          {error}
+      <div className="flex min-h-screen">
+        <UserNav />
+        <div className="flex-1 p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
+          <div className="max-w-6xl mx-auto text-center text-red-500">
+            {error}
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Order History</h1>
-          <div className="flex items-center gap-4">
-            <ExportButton 
-              orders={filteredOrders}
-              isDisabled={filteredOrders.length === 0}
-            />
-            <Link href="/dashboard/orders/new">
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 flex items-center gap-2 p-2">
-                <Package className="h-4 w-4" />
-                Place New Order
-              </Button>
-            </Link>
+    <div className="flex min-h-screen">
+      <UserNav />
+      <div className="flex-1 p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold text-gray-800">Order History</h1>
+            <div className="flex items-center gap-4">
+              <ExportButton 
+                orders={filteredOrders}
+                isDisabled={filteredOrders.length === 0}
+              />
+              <Link href="/dashboard/orders/new">
+                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 flex items-center gap-2 p-2">
+                  <Package className="h-4 w-4" />
+                  Place New Order
+                </Button>
+              </Link>
+            </div>
           </div>
-        </div>
 
-        <OrderSearch 
-          onSearch={handleSearch}
-          onStatusFilter={handleStatusFilter}
-        />
+          <OrderSearch 
+            onSearch={handleSearch}
+            onStatusFilter={handleStatusFilter}
+          />
 
-        <Card>
-          <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
-            <h2 className="text-xl font-semibold">Your Orders</h2>
-          </CardHeader>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <SortableHeader
-                    column="id"
-                    label="Order Number"
-                    sortColumn={sortColumn}
-                    sortDirection={sortDirection}
-                    onSort={handleSort}
-                  />
-                  <SortableHeader
-                    column="product"
-                    label="Product"
-                    sortColumn={sortColumn}
-                    sortDirection={sortDirection}
-                    onSort={handleSort}
-                  />
-                  <SortableHeader
-                    column="quantity"
-                    label="Quantity"
-                    sortColumn={sortColumn}
-                    sortDirection={sortDirection}
-                    onSort={handleSort}
-                  />
-                  <SortableHeader
-                    column="price"
-                    label="Total Price"
-                    sortColumn={sortColumn}
-                    sortDirection={sortDirection}
-                    onSort={handleSort}
-                  />
-                  <SortableHeader
-                    column="deliveryDate"
-                    label="Delivery Date"
-                    sortColumn={sortColumn}
-                    sortDirection={sortDirection}
-                    onSort={handleSort}
-                  />
-                  <SortableHeader
-                    column="status"
-                    label="Status"
-                    sortColumn={sortColumn}
-                    sortDirection={sortDirection}
-                    onSort={handleSort}
-                  />
-                  <TableHead>Address</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {paginatedOrders.length === 0 ? (
+          <Card>
+            <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
+              <h2 className="text-xl font-semibold">Your Orders</h2>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-gray-500 py-4">
-                      No orders found
-                    </TableCell>
+                    <SortableHeader
+                      column="id"
+                      label="Order Number"
+                      sortColumn={sortColumn}
+                      sortDirection={sortDirection}
+                      onSort={handleSort}
+                    />
+                    <SortableHeader
+                      column="product"
+                      label="Product"
+                      sortColumn={sortColumn}
+                      sortDirection={sortDirection}
+                      onSort={handleSort}
+                    />
+                    <SortableHeader
+                      column="quantity"
+                      label="Quantity"
+                      sortColumn={sortColumn}
+                      sortDirection={sortDirection}
+                      onSort={handleSort}
+                    />
+                    <SortableHeader
+                      column="price"
+                      label="Total Price"
+                      sortColumn={sortColumn}
+                      sortDirection={sortDirection}
+                      onSort={handleSort}
+                    />
+                    <SortableHeader
+                      column="deliveryDate"
+                      label="Delivery Date"
+                      sortColumn={sortColumn}
+                      sortDirection={sortDirection}
+                      onSort={handleSort}
+                    />
+                    <SortableHeader
+                      column="status"
+                      label="Status"
+                      sortColumn={sortColumn}
+                      sortDirection={sortDirection}
+                      onSort={handleSort}
+                    />
+                    <TableHead>Address</TableHead>
                   </TableRow>
-                ) : (
-                  paginatedOrders.map((order) => (
-                    <TableRow 
-                      key={order.id}
-                      className="cursor-pointer hover:bg-gray-50"
-                      onClick={() => router.push(`/dashboard/orders/${order.id}`)}
-                    >
-                      <TableCell className="font-medium">{order.id.slice(0, 8)}</TableCell>
-                      <TableCell>{order.product.name}</TableCell>
-                      <TableCell>{order.quantity}</TableCell>
-                      <TableCell>
-                        ${(order.quantity * order.product.price).toFixed(2)}
-                      </TableCell>
-                      <TableCell className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-gray-500" />
-                        {format(new Date(order.deliveryDate), 'MMM dd, yyyy')}
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={
-                            order.status === 'DELIVERED'
-                              ? 'secondary'
-                              : order.status === 'SHIPPED'
-                              ? 'default'
-                              : 'secondary'
-                          }
-                        >
-                          {order.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-gray-500" />
-                        {order.address}
+                </TableHeader>
+                <TableBody>
+                  {paginatedOrders.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center text-gray-500 py-4">
+                        No orders found
                       </TableCell>
                     </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-            {filteredOrders.length > 0 && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
-            )}
-          </CardContent>
-        </Card>
+                  ) : (
+                    paginatedOrders.map((order) => (
+                      <TableRow 
+                        key={order.id}
+                        className="cursor-pointer hover:bg-gray-50"
+                        onClick={() => router.push(`/dashboard/orders/${order.id}`)}
+                      >
+                        <TableCell className="font-medium">{order.id.slice(0, 8)}</TableCell>
+                        <TableCell>{order.product.name}</TableCell>
+                        <TableCell>{order.quantity}</TableCell>
+                        <TableCell>
+                          ${(order.quantity * order.product.price).toFixed(2)}
+                        </TableCell>
+                        <TableCell className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-gray-500" />
+                          {format(new Date(order.deliveryDate), 'MMM dd, yyyy')}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              order.status === 'DELIVERED'
+                                ? 'secondary'
+                                : order.status === 'SHIPPED'
+                                ? 'default'
+                                : 'secondary'
+                            }
+                          >
+                            {order.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-gray-500" />
+                          {order.address}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+              {filteredOrders.length > 0 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )
