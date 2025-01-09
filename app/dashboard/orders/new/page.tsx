@@ -165,7 +165,7 @@ export default function NewOrderPage() {
                         )}
                       </SelectValue>
                     </SelectTrigger>
-                    <SelectContent className="w-[--radix-select-trigger-width] bg-white">
+                    <SelectContent className="w-[--radix-select-trigger-width] bg-white max-h-[200px] overflow-y-auto">
                       {products.map((product) => (
                         <SelectItem 
                           key={product.id} 
