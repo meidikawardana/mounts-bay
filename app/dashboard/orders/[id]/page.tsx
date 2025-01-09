@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter, useParams } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Package, Calendar, MapPin } from "lucide-react"
@@ -36,11 +36,7 @@ export default function OrderDetailPage() {
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchOrder()
-  }, [params.id])
-
-  const fetchOrder = async () => {
+  const fetchOrder = useCallback(async () => {
     try {
       const response = await fetch(`/api/orders/${params.id}`)
       if (!response.ok) throw new Error('Failed to fetch order')
@@ -52,7 +48,11 @@ export default function OrderDetailPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [params.id, showNotification])
+
+  useEffect(() => {
+    fetchOrder()
+  }, [fetchOrder])
 
   const handleOrderCancelled = () => {
     showNotification("Order cancelled successfully", "success")

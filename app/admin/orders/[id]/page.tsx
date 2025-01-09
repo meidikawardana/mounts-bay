@@ -44,22 +44,22 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
   const [updating, setUpdating] = useState(false)
 
   useEffect(() => {
-    fetchOrder()
-  }, [resolvedParams.id])
-
-  const fetchOrder = async () => {
-    try {
-      const response = await fetch(`/api/admin/orders/${resolvedParams.id}`)
-      if (!response.ok) throw new Error('Failed to fetch order')
-      const data = await response.json()
-      setOrder(data.order)
-    } catch (error) {
-      console.error("Error fetching order:", error)
-      showNotification("Failed to load order details", "error")
-    } finally {
-      setLoading(false)
+    const fetchOrder = async () => {
+      try {
+        const response = await fetch(`/api/admin/orders/${resolvedParams.id}`)
+        if (!response.ok) throw new Error('Failed to fetch order')
+        const data = await response.json()
+        setOrder(data.order)
+      } catch (error) {
+        console.error("Error fetching order:", error)
+        showNotification("Failed to load order details", "error")
+      } finally {
+        setLoading(false)
+      }
     }
-  }
+
+    fetchOrder()
+  }, [resolvedParams.id, showNotification])
 
   const updateOrderStatus = async (newStatus: string) => {
     setUpdating(true)

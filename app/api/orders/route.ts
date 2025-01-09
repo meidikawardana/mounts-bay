@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../../lib/auth'
 import { db } from '../../lib/db'
+import { PrismaClient } from "@prisma/client"
 
 export async function POST(req: Request) {
     try {
@@ -64,7 +65,7 @@ export async function POST(req: Request) {
         }
 
         // Create order and update stock in a transaction
-        const order = await db.$transaction(async (tx) => {
+        const order = await db.$transaction(async (tx: PrismaClient) => {
             // Create the order
             const newOrder = await tx.order.create({
                 data: {

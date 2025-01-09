@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -43,12 +43,7 @@ export default function NewOrderPage() {
   const [address, setAddress] = useState("")
   const [submitting, setSubmitting] = useState(false)
 
-  useEffect(() => {
-    fetchProducts()
-    fetchUserProfile()
-  }, [])
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       const response = await fetch('/api/products')
       if (!response.ok) throw new Error('Failed to fetch products')
@@ -60,9 +55,9 @@ export default function NewOrderPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [showNotification])
 
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = useCallback(async () => {
     try {
       const response = await fetch('/api/user/profile')
       if (!response.ok) throw new Error('Failed to fetch profile')
@@ -72,7 +67,12 @@ export default function NewOrderPage() {
       console.error("Error fetching profile:", error)
       showNotification("Failed to load address from profile", "error")
     }
-  }
+  }, [showNotification])
+
+  useEffect(() => {
+    fetchProducts()
+    fetchUserProfile()
+  }, [fetchProducts, fetchUserProfile])
 
   const selectedProductDetails = products.find(p => p.id === selectedProduct)
 

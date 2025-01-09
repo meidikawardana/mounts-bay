@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -39,11 +39,7 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
     address: ""
   })
 
-  useEffect(() => {
-    fetchUser()
-  }, [resolvedParams.id])
-
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     try {
       const response = await fetch(`/api/admin/users/${resolvedParams.id}`)
       if (!response.ok) throw new Error('Failed to fetch user')
@@ -61,7 +57,11 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
     } finally {
       setLoading(false)
     }
-  }
+  }, [resolvedParams.id, showNotification])
+
+  useEffect(() => {
+    fetchUser()
+  }, [fetchUser])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
