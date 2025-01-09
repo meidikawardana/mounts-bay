@@ -17,7 +17,7 @@ interface Order {
 export const exportToExcel = (orders: Order[], fileName: string = 'orders') => {
     const worksheet = XLSX.utils.json_to_sheet(
         orders.map(order => ({
-            'Order ID': order.id,
+            'Order Number': order.id,
             'Product': order.product.name,
             'Quantity': order.quantity,
             'Total Price': (order.quantity * order.product.price).toFixed(2),
@@ -36,7 +36,7 @@ export const exportToExcel = (orders: Order[], fileName: string = 'orders') => {
 }
 
 export const exportToCSV = (orders: Order[], fileName: string = 'orders') => {
-    const headers = ['Order ID,Product,Quantity,Total Price,Status,Delivery Date,Address,Order Date']
+    const headers = ['Order Number,Product,Quantity,Total Price,Status,Delivery Date,Address,Order Date']
     const csv = orders.map(order => [
         order.id,
         `"${order.product.name}"`,

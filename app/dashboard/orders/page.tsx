@@ -200,7 +200,7 @@ export default function OrdersPage() {
                 <TableRow>
                   <SortableHeader
                     column="id"
-                    label="Order ID"
+                    label="Order Number"
                     sortColumn={sortColumn}
                     sortDirection={sortDirection}
                     onSort={handleSort}
