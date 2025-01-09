@@ -159,9 +159,13 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select role" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="USER">User</SelectItem>
-                      <SelectItem value="ADMIN">Admin</SelectItem>
+                    <SelectContent className="w-[--radix-select-trigger-width] bg-white">
+                      <SelectItem value="USER" className="w-full">
+                        <span className="flex justify-between items-center w-full pr-2">User</span>
+                      </SelectItem>
+                      <SelectItem value="ADMIN" className="w-full">
+                        <span className="flex justify-between items-center w-full pr-2">Admin</span>
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

@@ -192,10 +192,16 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
                     <SelectTrigger className="w-[200px]">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="PENDING">Pending</SelectItem>
-                      <SelectItem value="SHIPPED">Shipped</SelectItem>
-                      <SelectItem value="DELIVERED">Delivered</SelectItem>
+                    <SelectContent className="w-[--radix-select-trigger-width] bg-white">
+                      <SelectItem value="PENDING" className="w-full">
+                        <span className="flex items-center pl-6">Pending</span>
+                      </SelectItem>
+                      <SelectItem value="SHIPPED" className="w-full">
+                        <span className="flex items-center pl-6">Shipped</span>
+                      </SelectItem>
+                      <SelectItem value="DELIVERED" className="w-full">
+                        <span className="flex items-center pl-6">Delivered</span>
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
