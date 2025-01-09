@@ -44,6 +44,7 @@ export default function NewOrderPage() {
 
   useEffect(() => {
     fetchProducts()
+    fetchUserProfile()
   }, [])
 
   const fetchProducts = async () => {
@@ -57,6 +58,18 @@ export default function NewOrderPage() {
       showNotification("Failed to load products", "error")
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await fetch('/api/user/profile')
+      if (!response.ok) throw new Error('Failed to fetch profile')
+      const data = await response.json()
+      setAddress(data.user.address || '')
+    } catch (error) {
+      console.error("Error fetching profile:", error)
+      showNotification("Failed to load address from profile", "error")
     }
   }
 
