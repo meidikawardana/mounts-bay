@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select"
 import { use } from "react"
 import { useNotifications } from "../../../contexts/notifications-context"
+import { AdminNav } from "../../components/admin-nav"
 
 interface User {
   id: string
@@ -86,9 +87,12 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
 
   if (loading) {
     return (
-      <div className="min-h-screen p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
-        <div className="max-w-2xl mx-auto text-center">
-          Loading user details...
+      <div className="flex min-h-screen">
+        <AdminNav />
+        <div className="flex-1 p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
+          <div className="max-w-3xl mx-auto text-center">
+            Loading user details...
+          </div>
         </div>
       </div>
     )
@@ -96,86 +100,101 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
 
   if (!user) {
     return (
-      <div className="min-h-screen p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
-        <div className="max-w-2xl mx-auto text-center text-red-500">
-          User not found
+      <div className="flex min-h-screen">
+        <AdminNav />
+        <div className="flex-1 p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
+          <div className="max-w-3xl mx-auto text-center text-red-500">
+            User not found
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
-      <div className="max-w-2xl mx-auto">
-        <Card>
-          <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
-            <h2 className="text-xl font-semibold">Edit User</h2>
-          </CardHeader>
-          <CardContent className="p-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Name</label>
-                <Input
-                  value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full"
-                />
-              </div>
+    <div className="flex min-h-screen">
+      <AdminNav />
+      <div className="flex-1 p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex justify-between items-center mb-6">
+            <Button
+              variant="outline"
+              onClick={() => router.push('/admin/users')}
+            >
+              Back to Users
+            </Button>
+          </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Email</label>
-                <Input
-                  value={formData.email}
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  className="w-full"
-                  type="email"
-                />
-              </div>
+          <Card>
+            <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
+              <h2 className="text-xl font-semibold">Edit User</h2>
+            </CardHeader>
+            <CardContent className="p-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Name</label>
+                  <Input
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    className="w-full"
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Role</label>
-                <Select
-                  value={formData.role}
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, role: value }))}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="USER">User</SelectItem>
-                    <SelectItem value="ADMIN">Admin</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Email</label>
+                  <Input
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    className="w-full"
+                    type="email"
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Address</label>
-                <Input
-                  value={formData.address}
-                  onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                  className="w-full"
-                />
-              </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Role</label>
+                  <Select
+                    value={formData.role}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, role: value }))}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="USER">User</SelectItem>
+                      <SelectItem value="ADMIN">Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <div className="flex justify-end gap-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => router.push('/admin/users')}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={saving}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                >
-                  {saving ? "Saving..." : "Save Changes"}
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Address</label>
+                  <Input
+                    value={formData.address}
+                    onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => router.push('/admin/users')}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={saving}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                  >
+                    {saving ? "Saving..." : "Save Changes"}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )
