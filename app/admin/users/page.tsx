@@ -14,6 +14,7 @@ import {
 import { format } from "date-fns"
 import { Pagination } from "../../dashboard/orders/components/pagination"
 import { useRouter } from "next/navigation"
+import { AdminNav } from "../components/admin-nav"
 
 interface User {
   id: string
@@ -59,9 +60,12 @@ export default function AdminUsersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
-        <div className="max-w-6xl mx-auto text-center">
-          Loading users...
+      <div className="flex min-h-screen">
+        <AdminNav />
+        <div className="flex-1 p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
+          <div className="max-w-6xl mx-auto text-center">
+            Loading users...
+          </div>
         </div>
       </div>
     )
@@ -69,77 +73,83 @@ export default function AdminUsersPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
-        <div className="max-w-6xl mx-auto text-center text-red-500">
-          {error}
+      <div className="flex min-h-screen">
+        <AdminNav />
+        <div className="flex-1 p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
+          <div className="max-w-6xl mx-auto text-center text-red-500">
+            {error}
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">All Users</h1>
-        </div>
+    <div className="flex min-h-screen">
+      <AdminNav />
+      <div className="flex-1 p-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold text-gray-800">All Users</h1>
+          </div>
 
-        <Card>
-          <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
-            <h2 className="text-xl font-semibold">Users</h2>
-          </CardHeader>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Address</TableHead>
-                  <TableHead>Joined Date</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {paginatedUsers.length === 0 ? (
+          <Card>
+            <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
+              <h2 className="text-xl font-semibold">Users</h2>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center text-gray-500 py-4">
-                      No users found
-                    </TableCell>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Address</TableHead>
+                    <TableHead>Joined Date</TableHead>
                   </TableRow>
-                ) : (
-                  paginatedUsers.map((user) => (
-                    <TableRow 
-                      key={user.id}
-                      className="cursor-pointer hover:bg-gray-50"
-                      onClick={() => router.push(`/admin/users/${user.id}`)}
-                    >
-                      <TableCell className="font-medium">{user.name}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={user.role === 'ADMIN' ? 'default' : 'secondary'}
-                        >
-                          {user.role}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{user.address || 'Not provided'}</TableCell>
-                      <TableCell>
-                        {format(new Date(user.createdAt), 'MMM dd, yyyy')}
+                </TableHeader>
+                <TableBody>
+                  {paginatedUsers.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center text-gray-500 py-4">
+                        No users found
                       </TableCell>
                     </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-            {users.length > 0 && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-              />
-            )}
-          </CardContent>
-        </Card>
+                  ) : (
+                    paginatedUsers.map((user) => (
+                      <TableRow 
+                        key={user.id}
+                        className="cursor-pointer hover:bg-gray-50"
+                        onClick={() => router.push(`/admin/users/${user.id}`)}
+                      >
+                        <TableCell className="font-medium">{user.name}</TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={user.role === 'ADMIN' ? 'default' : 'secondary'}
+                          >
+                            {user.role}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{user.address || 'Not provided'}</TableCell>
+                        <TableCell>
+                          {format(new Date(user.createdAt), 'MMM dd, yyyy')}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+              {users.length > 0 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )
