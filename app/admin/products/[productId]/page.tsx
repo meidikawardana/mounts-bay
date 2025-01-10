@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
-import { Package } from "lucide-react"
+import { Package, ArrowUpCircle, ArrowDownCircle } from "lucide-react"
 import { AdminNav } from "../../components/admin-nav"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import { format } from "date-fns"
+import { Badge } from "@/components/ui/badge"
 
 interface Product {
   id: string
@@ -16,6 +18,14 @@ interface Product {
   stock: number
   category: string
   image: string
+}
+
+interface StockMovement {
+  id: string
+  type: 'IN' | 'OUT'
+  quantity: number
+  date: string
+  reason: string
 }
 
 export default function ProductDetailPage() {
@@ -40,6 +50,44 @@ export default function ProductDetailPage() {
 
     fetchProduct()
   }, [params.productId])
+
+  const stockMovements: StockMovement[] = [
+    {
+      id: '1',
+      type: 'IN',
+      quantity: 50,
+      date: '2024-03-15T10:00:00Z',
+      reason: 'Restock from supplier'
+    },
+    {
+      id: '2',
+      type: 'OUT',
+      quantity: 5,
+      date: '2024-03-14T15:30:00Z',
+      reason: 'Order #12345'
+    },
+    {
+      id: '3',
+      type: 'IN',
+      quantity: 25,
+      date: '2024-03-13T09:15:00Z',
+      reason: 'Inventory adjustment'
+    },
+    {
+      id: '4',
+      type: 'OUT',
+      quantity: 10,
+      date: '2024-03-12T14:20:00Z',
+      reason: 'Order #12344'
+    },
+    {
+      id: '5',
+      type: 'OUT',
+      quantity: 3,
+      date: '2024-03-11T16:45:00Z',
+      reason: 'Order #12343'
+    }
+  ]
 
   if (loading) {
     return (
@@ -77,7 +125,7 @@ export default function ProductDetailPage() {
             </Button>
           </div>
 
-          <Card>
+          <Card className="mb-5">
             <CardHeader className="space-y-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
               <div className="flex items-center gap-2">
                 <Package className="h-5 w-5" />
@@ -112,6 +160,42 @@ export default function ProductDetailPage() {
               <div>
                 <h3 className="font-semibold text-gray-700 mb-2">Description</h3>
                 <p className="text-gray-600">{product.description}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
+              <h2 className="text-xl font-semibold">Stock Movement History</h2>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                {stockMovements.map((movement) => (
+                  <div
+                    key={movement.id}
+                    className="flex items-center justify-between border-b pb-4 last:border-0"
+                  >
+                    <div className="flex items-center gap-3">
+                      {movement.type === 'IN' ? (
+                        <ArrowUpCircle className="h-5 w-5 text-green-500" />
+                      ) : (
+                        <ArrowDownCircle className="h-5 w-5 text-red-500" />
+                      )}
+                      <div>
+                        <p className="font-medium">
+                          {movement.type === 'IN' ? 'Stock In' : 'Stock Out'}{' '}
+                          <Badge variant={movement.type === 'IN' ? 'default' : 'destructive'}>
+                            {movement.type === 'IN' ? '+' : '-'}{movement.quantity} units
+                          </Badge>
+                        </p>
+                        <p className="text-sm text-gray-500">{movement.reason}</p>
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {format(new Date(movement.date), 'MMM dd, yyyy HH:mm')}
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
