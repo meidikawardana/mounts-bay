@@ -4,7 +4,7 @@ import { useRouter, useParams } from "next/navigation"
 import { useState, useEffect, useCallback } from "react"
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Package, Calendar, MapPin } from "lucide-react"
+import { Package, Calendar, MapPin, Truck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { format } from "date-fns"
 import { UpdateStatus } from "./update-status"
@@ -97,6 +97,13 @@ export default function OrderDetailPage() {
               onClick={() => router.push('/dashboard/orders')}
             >
               Back to Orders
+            </Button>
+            <Button
+              onClick={() => router.push(`/orders/${order.id}/tracking`)}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 gap-2 px-6 py-2"
+            >
+              <Truck className="h-5 w-5 animate-bounce" />
+              Track Order
             </Button>
           </div>
 
