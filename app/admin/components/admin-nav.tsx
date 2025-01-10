@@ -7,6 +7,7 @@ import {
   ShoppingCart,
   Users,
   LogOut,
+  Truck,
 } from "lucide-react"
 
 const routes = [
@@ -33,6 +34,12 @@ const routes = [
     icon: Users,
     href: "/admin/users",
     color: "text-orange-500",
+  },
+  {
+    label: "Deliveries",
+    icon: Truck,
+    href: "/admin/deliveries",
+    color: "text-green-500",
   },
 ]
 
