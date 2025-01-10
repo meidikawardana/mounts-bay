@@ -15,15 +15,9 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { FilteredDropdown } from "../../components/ui/filtered-dropdown"
 
 interface Product {
   id: string
@@ -70,6 +64,14 @@ export default function AdminProductsPage() {
   const handleRowClick = (productId: string) => {
     router.push(`/admin/products/${productId}`)
   }
+
+  const categoryOptions = [
+    { value: "all", label: "All Categories" },
+    ...categories.map(category => ({
+      value: category,
+      label: category
+    }))
+  ]
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -121,27 +123,12 @@ export default function AdminProductsPage() {
                     className="pl-9"
                   />
                 </div>
-                <Select
+                <FilteredDropdown
                   value={selectedCategory}
                   onValueChange={setSelectedCategory}
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="All Categories" />
-                  </SelectTrigger>
-                  <SelectContent className="w-[--radix-select-trigger-width] bg-white [&>div>span]:hidden">
-                    <SelectItem value="all">
-                      <span className="ml-[20px]">All Categories</span>
-                    </SelectItem>
-                    {categories.map((category) => (
-                      <SelectItem 
-                        key={category} 
-                        value={category}
-                      >
-                        <span className="ml-[20px]">{category}</span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  placeholder="All Categories"
+                  options={categoryOptions}
+                />
               </div>
 
               {loading ? (

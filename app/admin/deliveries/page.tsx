@@ -12,13 +12,6 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { AdminNav } from "../components/admin-nav"
 import { Calendar } from "@/components/ui/calendar"
 import { Button } from "@/components/ui/button"
@@ -36,6 +29,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { FilteredDropdown } from "../../components/ui/filtered-dropdown"
 
 interface Delivery {
   id: string
@@ -118,6 +112,13 @@ export default function DeliveryManagementPage() {
     }
   }
 
+  const statusOptions = [
+    { value: "all", label: "All Status" },
+    { value: "PENDING", label: "Pending" },
+    { value: "IN_TRANSIT", label: "In Transit" },
+    { value: "DELIVERED", label: "Delivered" }
+  ]
+
   return (
     <div className="flex h-screen overflow-hidden">
       <AdminNav />
@@ -143,21 +144,13 @@ export default function DeliveryManagementPage() {
                     />
                   </div>
                 </div>
-                <Select
+                <FilteredDropdown
                   value={selectedStatus}
                   onValueChange={setSelectedStatus}
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <Filter className="h-4 w-4 mr-2" />
-                    <SelectValue placeholder="Filter by status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="PENDING">Pending</SelectItem>
-                    <SelectItem value="IN_TRANSIT">In Transit</SelectItem>
-                    <SelectItem value="DELIVERED">Delivered</SelectItem>
-                  </SelectContent>
-                </Select>
+                  placeholder="Filter by status"
+                  options={statusOptions}
+                  icon={Filter}
+                />
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-[180px]">
