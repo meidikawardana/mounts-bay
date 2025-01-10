@@ -13,23 +13,16 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { AdminNav } from "../components/admin-nav"
-import { Calendar } from "@/components/ui/calendar"
-import { Button } from "@/components/ui/button"
 import { format } from "date-fns"
 import { 
   Truck, 
   Phone, 
   Mail, 
-  Calendar as CalendarIcon,
   Search,
   Filter
 } from "lucide-react"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import { FilteredDropdown } from "../../components/ui/filtered-dropdown"
+import { DatePicker } from "../../components/ui/date-picker"
 
 interface Delivery {
   id: string
@@ -151,26 +144,19 @@ export default function DeliveryManagementPage() {
                   options={statusOptions}
                   icon={Filter}
                 />
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-[180px]">
-                      <CalendarIcon className="h-4 w-4 mr-2" />
-                      {selectedDate ? (
-                        format(selectedDate, "PPP")
-                      ) : (
-                        "Pick a date"
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={selectedDate}
-                      onSelect={setSelectedDate}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                <DatePicker
+                  date={selectedDate}
+                  onSelect={(date) => {
+                    setSelectedDate(date);
+                    const popoverElement = document.querySelector('[role="dialog"]');
+                    if (popoverElement) {
+                      const closeEvent = new KeyboardEvent('keydown', { key: 'Escape' });
+                      popoverElement.dispatchEvent(closeEvent);
+                    }
+                  }}
+                  placeholder="Pick a date"
+                  className="w-[180px]"
+                />
               </div>
 
               <Table>
