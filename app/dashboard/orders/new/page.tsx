@@ -204,12 +204,16 @@ export default function NewOrderPage() {
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-full justify-start text-left font-normal",
+                          "w-full justify-start text-left font-normal pl-3",
                           !deliveryDate && "text-muted-foreground"
                         )}
                       >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {deliveryDate ? format(deliveryDate, "PPP") : "Pick a date"}
+                        <div className="flex items-center gap-2">
+                          <CalendarIcon className="h-4 w-4" />
+                          <span>
+                            {deliveryDate ? format(deliveryDate, "PPP") : "Pick a date"}
+                          </span>
+                        </div>
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-4 bg-white rounded-lg shadow-lg" align="start">
