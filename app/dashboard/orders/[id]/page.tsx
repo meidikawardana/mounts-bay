@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge"
 import { Package, Calendar, MapPin, Truck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { format } from "date-fns"
-import { UpdateStatus } from "./update-status"
 import { CancelOrder } from "../components/cancel-order"
 import { useNotifications } from "../../../contexts/notifications-context"
 import { UserNav } from "../../components/user-nav"
@@ -152,18 +151,15 @@ export default function OrderDetailPage() {
                 </div>
               </div>
 
-              <div className="flex gap-4">
-                <UpdateStatus 
-                  orderId={order.id} 
-                  currentStatus={order.status}
-                  onStatusUpdate={fetchOrder} 
-                />
-                <CancelOrder 
-                  orderId={order.id} 
-                  onCancelled={handleOrderCancelled}
-                  disabled={order.status !== 'PENDING'} 
-                />
-              </div>
+              {order.status === 'PENDING' && (
+                <div>
+                  <CancelOrder 
+                    orderId={order.id} 
+                    onCancelled={handleOrderCancelled}
+                    disabled={order.status !== 'PENDING'} 
+                  />
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
