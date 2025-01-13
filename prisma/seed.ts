@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
@@ -916,6 +917,25 @@ export const createOrders = (userIds: string[], productIds: string[]) => {
 async function main() {
     try {
         console.log('Starting seed...')
+
+        // Create admin users
+        await prisma.user.create({
+            data: {
+                email: "admin@example.com",
+                name: "Admin User",
+                password: await bcrypt.hash("admin123", 12),
+                role: "ADMIN"
+            },
+        })
+
+        await prisma.user.create({
+            data: {
+                email: "admin2@example.com",
+                name: "Admin User 2",
+                password: await bcrypt.hash("admin123", 12),
+                role: "ADMIN"
+            },
+        })
 
         // Create products
         console.log('Creating products...')
