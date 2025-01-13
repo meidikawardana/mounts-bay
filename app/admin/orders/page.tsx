@@ -13,11 +13,13 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Calendar, MapPin } from "lucide-react"
-import { format } from "date-fns"
+import { format, isAfter } from "date-fns"
 import { OrderSearch } from "../../dashboard/orders/components/order-search"
 import { ExportButton } from "../../dashboard/orders/components/export-button"
 import { Pagination } from "../../dashboard/orders/components/pagination"
 import { AdminNav } from "../components/admin-nav"
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 interface Order {
   id: string
@@ -91,6 +93,43 @@ export default function AdminOrdersPage() {
   )
 
   const totalPages = Math.ceil(filteredOrders.length / ordersPerPage)
+
+  useEffect(() => {
+    // Check for overdue deliveries
+    const overdueOrders = orders.filter(order => 
+      order.status !== 'DELIVERED' && 
+      isAfter(new Date(), new Date(order.deliveryDate))
+    )
+
+    console.log(overdueOrders)
+    // Show notifications for overdue orders
+    if (overdueOrders.length > 0) {
+
+        setTimeout(() => {
+            overdueOrders.forEach(order => {
+                toast.error(
+                <div>
+                    <div className="font-bold">Overdue Delivery!</div>
+                    <div className="text-sm mt-1">
+                    Order #{order.id.slice(0, 8)} - {order.product.name}
+                    </div>
+                    <div className="text-sm text-red-600 mt-1">
+                    Due date: {format(new Date(order.deliveryDate), 'MMM dd, yyyy')}
+                    </div>
+                </div>,
+                {
+                    position: "top-right",
+                    autoClose: 7000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                }
+                )
+            })
+        }, 1000)
+    }
+  }, [orders])
 
   if (loading) {
     return (
@@ -219,6 +258,19 @@ export default function AdminOrdersPage() {
           </Card>
         </div>
       </div>
+      
+      <ToastContainer
+        position="top-right"
+        autoClose={7000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   )
 } 
