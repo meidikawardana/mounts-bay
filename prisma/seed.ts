@@ -396,7 +396,7 @@ export async function main() {
 
         // Create admin users
         await Promise.all([
-            prisma.user.upsert({
+            prisma.user.insert({
                 where: { email: 'admin@example.com' },
                 update: {},
                 create: {
@@ -408,41 +408,41 @@ export async function main() {
             }),
         ])
 
-        // Create products
-        console.log('Creating products...')
-        const createdProducts = await prisma.product.createMany({
-            data: products
-        })
-        console.log(`Created ${createdProducts.count} products`)
+        // // Create products
+        // console.log('Creating products...')
+        // const createdProducts = await prisma.product.createMany({
+        //     data: products
+        // })
+        // console.log(`Created ${createdProducts.count} products`)
 
-        // Get all users and products for creating orders
-        const users = await prisma.user.findMany({
-            select: { id: true },
-        })
-        const allProducts = await prisma.product.findMany({
-            select: { id: true },
-        })
+        // // Get all users and products for creating orders
+        // const users = await prisma.user.findMany({
+        //     select: { id: true },
+        // })
+        // const allProducts = await prisma.product.findMany({
+        //     select: { id: true },
+        // })
 
-        if (users.length === 0) {
-            throw new Error('No users found in the database. Please create users first.')
-        }
+        // if (users.length === 0) {
+        //     throw new Error('No users found in the database. Please create users first.')
+        // }
 
-        // Create orders
-        console.log('Creating orders...')
-        const orders = createOrders(
-            users.map((user: { id: string }) => user.id),
-            allProducts.map((product: { id: string }) => product.id)
-        )
+        // // Create orders
+        // console.log('Creating orders...')
+        // const orders = createOrders(
+        //     users.map((user: { id: string }) => user.id),
+        //     allProducts.map((product: { id: string }) => product.id)
+        // )
 
-        for (const order of orders) {
-            await prisma.order.create({
-                data: {
-                    ...order,
-                    status: order.status as 'PENDING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED'
-                }
-            })
-            console.log('Created 1 order')
-        }
+        // for (const order of orders) {
+        //     await prisma.order.create({
+        //         data: {
+        //             ...order,
+        //             status: order.status as 'PENDING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED'
+        //         }
+        //     })
+        //     console.log('Created 1 order')
+        // }
 
         console.log('Seed completed successfully')
     } catch (error) {
