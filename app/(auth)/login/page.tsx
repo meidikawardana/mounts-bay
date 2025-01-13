@@ -20,7 +20,7 @@ export default function LoginPage() {
     setIsSeeding(true)
     try {
       const response = await fetch('/api/seed', {
-        method: 'POST',
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       })
       

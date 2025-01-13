@@ -4,16 +4,7 @@ import { main } from '../../../prisma/seed'
 
 const prisma = new PrismaClient()
 
-// Add export config to explicitly allow POST
-export const config = {
-    runtime: 'edge',
-    regions: ['all'],
-}
-
-// Add dynamic flag to ensure route handler is recognized
-export const dynamic = 'force-dynamic'
-
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
     try {
         console.info('request: ' + req)
         await main()
