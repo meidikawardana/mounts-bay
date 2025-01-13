@@ -2,7 +2,6 @@ import { NextResponse, NextRequest } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "../../../../lib/auth"
 import { db } from "../../../../lib/db"
-import { PrismaClient } from "@prisma/client"
 
 export async function POST(
     request: NextRequest,
@@ -38,19 +37,22 @@ export async function POST(
             )
         }
         // Cancel order and restore product stock in a transaction
-        const updatedOrder = await db.$transaction(async (tx: PrismaClient) => {
+        const updatedOrder = await db.$transaction(async (tx) => {
             // Update order status
             const cancelled = await tx.order.update({
                 where: { id },
-                data: { status: "CANCELLED" }
+                data: { status: 'CANCELLED' },
+                include: {
+                    product: true
+                }
             })
 
             // Restore product stock
             await tx.product.update({
-                where: { id: order.productId },
+                where: { id: cancelled.productId },
                 data: {
                     stock: {
-                        increment: order.quantity
+                        increment: cancelled.quantity
                     }
                 }
             })
