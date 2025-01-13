@@ -729,7 +729,7 @@ const getDeliveryDate = (orderDate: Date): Date => {
     return new Date(orderDate.getTime() + (deliveryDays * 24 * 60 * 60 * 1000))
 }
 
-export const createOrders = (userIds: [], productIds: []) => {
+export const createOrders = (userIds: string[], productIds: string[]) => {
     return [
         {
             userId: userIds[Math.floor(Math.random() * userIds.length)],
