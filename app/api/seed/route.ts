@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
-import { main } from '../../../prisma/seed'
+// import { main } from '../../../prisma/seed'
 
 const prisma = new PrismaClient()
 
 export async function GET(req: NextRequest) {
     try {
         console.info('request: ' + req)
-        await main()
+        // await main()
 
         return NextResponse.json({ message: "Database seeded successfully" })
     } catch (error) {

@@ -8,32 +8,11 @@ import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"
 import Link from "next/link"
 import { Mail, Lock, LogIn } from "lucide-react"
-import { toast } from "react-toastify"
 
 export default function LoginPage() {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [isAdmin, setIsAdmin] = useState(false)
-  const [isSeeding, setIsSeeding] = useState(false)
-
-  const handleSeed = async () => {
-    setIsSeeding(true)
-    try {
-      const response = await fetch('/api/seed', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      })
-      
-      if (!response.ok) throw new Error('Failed to seed database')
-      
-      toast.success('Database seeded successfully!')
-    } catch (error) {
-      toast.error('Failed to seed database')
-      console.error(error)
-    } finally {
-      setIsSeeding(false)
-    }
-  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -123,39 +102,6 @@ export default function LoginPage() {
           <Link href="/forgot-password" className="text-sm text-gray-600 hover:text-gray-800 text-center">
             Forgot your password?
           </Link>
-
-          <Button
-            onClick={handleSeed}
-            disabled={isSeeding}
-            className="mt-4 relative overflow-hidden group bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white font-semibold py-2 px-6 rounded-lg shadow-lg transform transition-all duration-500 ease-in-out hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span className="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-96 ease"></span>
-            <div className="flex items-center gap-2">
-              {isSeeding ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>Seeding Database...</span>
-                </>
-              ) : (
-                <>
-                  <svg 
-                    className="w-5 h-5 animate-bounce" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                    />
-                  </svg>
-                  <span>Seed Database</span>
-                </>
-              )}
-            </div>
-          </Button>
         </CardFooter>
       </Card>
     </div>
