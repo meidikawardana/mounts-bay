@@ -23,6 +23,8 @@ import { ExportButton } from "./components/export-button"
 import { UserNav } from "../components/user-nav"
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { useSession } from "next-auth/react"
+import { webSocketService } from "../../services/websocket-service"
 
 interface Order {
   id: string
@@ -47,10 +49,36 @@ export default function OrdersPage() {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const ordersPerPage = 10
+  const { data: session } = useSession()
 
   useEffect(() => {
     fetchOrders()
   }, [])
+
+  useEffect(() => {
+    if (!session?.user?.id) return
+
+    // Connect to WebSocket with user ID
+    webSocketService.connect(session.user.id)
+
+    // Listen for order status updates
+    webSocketService.onOrderStatusUpdate((data) => {
+      toast.info(`Order #${data.orderId.slice(0, 8)}: ${data.message}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      })
+    })
+
+    // Cleanup on unmount
+    return () => {
+      webSocketService.disconnect()
+    }
+  }, [session])
 
   const fetchOrders = async () => {
     try {

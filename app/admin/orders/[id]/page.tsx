@@ -17,7 +17,7 @@ import { format } from "date-fns"
 import { AdminNav } from "../../components/admin-nav"
 import { use } from "react"
 import { useNotifications } from "../../../contexts/notifications-context"
-
+import { webSocketService } from "../../../services/websocket-service"
 interface Order {
   id: string
   product: {
@@ -73,6 +73,15 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
       if (!response.ok) throw new Error('Failed to update order')
       
       const updatedOrder = await response.json()
+      
+      // Send WebSocket notification
+      webSocketService.emitOrderStatusUpdate({
+        userId: updatedOrder.order.user.id,
+        orderId: updatedOrder.order.id,
+        status: newStatus,
+        message: `Your order status has been updated to ${newStatus}`
+      })
+
       setOrder(updatedOrder.order)
       showNotification("Order status updated successfully", "success")
     } catch (error) {
