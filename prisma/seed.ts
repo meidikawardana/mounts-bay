@@ -395,27 +395,27 @@ export async function main() {
         console.log('Starting seed...')
 
         // Create admin users
-        await prisma.user.create({
-            data: {
-                email: "admin@example.com",
-                name: "Admin User",
-                password: await bcrypt.hash("admin123", 12),
-                role: "ADMIN"
-            },
-        })
+        // await prisma.user.create({
+        //     data: {
+        //         email: "admin@example.com",
+        //         name: "Admin User",
+        //         password: await bcrypt.hash("admin123", 12),
+        //         role: "ADMIN"
+        //     },
+        // })
 
-        // await Promise.all([
-        //     prisma.user.upsert({
-        //         where: { email: 'admin@example.com' },
-        //         update: {},
-        //         create: {
-        //             name: 'Admin User',
-        //             email: 'admin@example.com',
-        //             password: await bcrypt.hash('admin123', 10),
-        //             role: 'ADMIN'
-        //         }
-        //     }),
-        // ])
+        await Promise.all([
+            prisma.user.upsert({
+                where: { email: 'admin@example.com' },
+                update: {},
+                create: {
+                    name: 'Admin User',
+                    email: 'admin@example.com',
+                    password: await bcrypt.hash('admin123', 10),
+                    role: 'ADMIN'
+                }
+            }),
+        ])
 
         // // Create products
         // console.log('Creating products...')
