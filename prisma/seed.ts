@@ -724,12 +724,12 @@ const getRandomRecentDate = () => {
 }
 
 // Helper function to get delivery date (7-14 days from order date)
-const getDeliveryDate = (orderDate) => {
+const getDeliveryDate = (orderDate: Date): Date => {
     const deliveryDays = Math.floor(Math.random() * (14 - 7 + 1)) + 7
     return new Date(orderDate.getTime() + (deliveryDays * 24 * 60 * 60 * 1000))
 }
 
-export const createOrders = (userIds, productIds) => {
+export const createOrders = (userIds: [], productIds: []) => {
     return [
         {
             userId: userIds[Math.floor(Math.random() * userIds.length)],
@@ -914,7 +914,7 @@ export const createOrders = (userIds, productIds) => {
     ]
 }
 
-async function main() {
+export async function main() {
     try {
         console.log('Starting seed...')
 
@@ -959,15 +959,15 @@ async function main() {
         // Create orders
         console.log('Creating orders...')
         const orders = createOrders(
-            users.map((user) => user.id),
-            allProducts.map((product) => product.id)
+            users.map((user: { id: string }) => user.id),
+            allProducts.map((product: { id: string }) => product.id)
         )
 
         for (const order of orders) {
             await prisma.order.create({
                 data: {
                     ...order,
-                    status: order.status // as 'PENDING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED'
+                    status: order.status as 'PENDING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED'
                 }
             })
             console.log('Created 1 order')
