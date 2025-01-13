@@ -1,13 +1,14 @@
-import { NextResponse } from "next/server"
+import { NextResponse, NextRequest } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "../../../../lib/auth"
 import { db } from "../../../../lib/db"
 import { PrismaClient } from "@prisma/client"
 
 export async function POST(
-    req: Request,
-    { params }: { params: { id: string } }
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
 ) {
+    const { id } = await params;
     try {
         const session = await getServerSession(authOptions)
         if (!session?.user?.email) {
@@ -18,7 +19,7 @@ export async function POST(
         }
 
         const order = await db.order.findUnique({
-            where: { id: params.id },
+            where: { id },
             include: { product: true }
         })
 
@@ -40,7 +41,7 @@ export async function POST(
         const updatedOrder = await db.$transaction(async (tx: PrismaClient) => {
             // Update order status
             const cancelled = await tx.order.update({
-                where: { id: params.id },
+                where: { id },
                 data: { status: "CANCELLED" }
             })
 

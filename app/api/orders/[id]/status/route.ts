@@ -5,8 +5,9 @@ import { db } from "../../../../lib/db"
 
 export async function PATCH(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
+    const { id } = await params;
     try {
         const session = await getServerSession(authOptions)
         if (!session?.user?.email) {
@@ -19,7 +20,7 @@ export async function PATCH(
         const { status } = await req.json()
 
         const order = await db.order.update({
-            where: { id: params.id },
+            where: { id },
             data: { status }
         })
 

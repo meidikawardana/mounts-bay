@@ -3,12 +3,13 @@ import { db } from "../../../lib/db"
 
 export async function GET(
     request: Request,
-    { params }: { params: { productId: string } }
+    { params }: { params: Promise<{ productId: string }> }
 ) {
+    const { productId } = await params;
     try {
         const product = await db.product.findUnique({
             where: {
-                id: params.productId
+                id: productId
             }
         })
 
