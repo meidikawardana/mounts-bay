@@ -4,7 +4,7 @@ import { main } from '../../../prisma/seed'
 
 const prisma = new PrismaClient()
 
-export async function GET() {
+export async function POST() {
     try {
         await main()
 
