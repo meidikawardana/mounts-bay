@@ -18,6 +18,8 @@ import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { FilteredDropdown } from "../../components/ui/filtered-dropdown"
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 interface Product {
   id: string
@@ -60,6 +62,31 @@ export default function AdminProductsPage() {
 
     fetchProducts()
   }, [])
+
+  useEffect(() => {
+    // Show notifications for low stock products
+    if (lowStockProducts.length > 0) {
+      lowStockProducts.forEach(product => {
+        toast.warning(
+          <div>
+            <div className="font-bold">Low Stock Alert!</div>
+            <div className="text-sm mt-1">{product.name}</div>
+            <div className="text-sm text-red-600 mt-1">
+              Only {product.stock} items remaining
+            </div>
+          </div>,
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          }
+        )
+      })
+    }
+  }, [lowStockProducts])
 
   const handleRowClick = (productId: string) => {
     router.push(`/admin/products/${productId}`)
@@ -182,6 +209,18 @@ export default function AdminProductsPage() {
           </Card>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   )
 } 
