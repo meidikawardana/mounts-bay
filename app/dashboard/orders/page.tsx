@@ -21,6 +21,8 @@ import { SortableHeader } from "./components/sortable-header"
 import { Pagination } from "./components/pagination"
 import { ExportButton } from "./components/export-button"
 import { UserNav } from "../components/user-nav"
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 interface Order {
   id: string
@@ -181,6 +183,12 @@ export default function OrdersPage() {
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-800">Order History</h1>
             <div className="flex items-center gap-4">
+              {/* <Button
+                onClick={() => toast.success('🦄 Test notification!')}
+                className="bg-gradient-to-r from-blue-600 to-purple-600"
+              >
+                Show Toast
+              </Button> */}
               <ExportButton 
                 orders={filteredOrders}
                 isDisabled={filteredOrders.length === 0}
@@ -307,6 +315,18 @@ export default function OrdersPage() {
               )}
             </CardContent>
           </Card>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
         </div>
       </div>
     </div>
